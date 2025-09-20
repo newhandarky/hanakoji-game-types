@@ -16,3 +16,4 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // src/index.ts
 __exportStar(require("./game.types"), exports);
+__exportStar(require("./client.types"), exports);
