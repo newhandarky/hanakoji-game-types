@@ -108,3 +108,31 @@ export interface RoomInfo {
     maxPlayers: number;
     gameState: 'waiting' | 'playing' | 'ended';
 }
+export type WebSocketEventType = 'GAME_STATE_SYNC' | 'ORDER_DECISION_STARTED' | 'ORDER_DECISION_COMPLETED' | 'TURN_CHANGED' | 'PLAYER_JOINED' | 'ERROR';
+export interface WebSocketMessage {
+    type: string;
+    payload: any;
+}
+export interface GameStartedPayload {
+    gameState: GameState;
+    message?: string;
+}
+export interface PlayerJoinedPayload {
+    player: Player;
+    gameState: GameState;
+}
+export interface OrderDecisionStartPayload {
+    players: string[];
+    gameState: GameState;
+}
+export interface OrderDecisionResultPayload {
+    firstPlayer: string;
+    secondPlayer: string;
+    order: string[];
+    gameState: GameState;
+}
+export interface ErrorPayload {
+    code: string;
+    message: string;
+    details?: any;
+}
