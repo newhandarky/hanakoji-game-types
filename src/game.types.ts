@@ -76,7 +76,8 @@ export type GameAction =
     // 新增順序決定相關動作
     | { type: 'START_ORDER_DECISION'; payload: { players: string[] } }
     | { type: 'ORDER_DECISION_RESULT'; payload: { firstPlayer: string; secondPlayer: string; order: string[] } }
-    | { type: 'UPDATE_ORDER_CONFIRMATIONS'; payload: { confirmations: string[]; waitingFor: string[] } };
+    | { type: 'UPDATE_ORDER_CONFIRMATIONS'; payload: { confirmations: string[]; waitingFor: string[] } }
+
 
 // 房間資訊（若需要額外管理大廳狀態）
 export interface RoomInfo {
@@ -84,4 +85,47 @@ export interface RoomInfo {
     players: string[];              // 玩家 ID 陣列
     maxPlayers: number;             // 房間上限
     gameState: 'waiting' | 'playing' | 'ended';
+}
+
+export type WebSocketEventType =
+    // 狀態通知（過去式/完成式）
+    | 'GAME_STATE_SYNC'           // 同步遊戲狀態
+    | 'ORDER_DECISION_STARTED'    // 順序決定已開始
+    | 'ORDER_DECISION_COMPLETED'  // 順序決定已完成
+    | 'TURN_CHANGED'             // 回合已改變
+    | 'PLAYER_JOINED'            // 玩家已加入
+    | 'ERROR'                    // 錯誤發生
+
+export interface WebSocketMessage {
+    type: string;
+    payload: any;
+}
+
+// 特定事件的 payload 型別
+export interface GameStartedPayload {
+    gameState: GameState;
+    message?: string;
+}
+
+export interface PlayerJoinedPayload {
+    player: Player;
+    gameState: GameState;
+}
+
+export interface OrderDecisionStartPayload {
+    players: string[];
+    gameState: GameState;
+}
+
+export interface OrderDecisionResultPayload {
+    firstPlayer: string;
+    secondPlayer: string;
+    order: string[];
+    gameState: GameState;
+}
+
+export interface ErrorPayload {
+    code: string;
+    message: string;
+    details?: any;
 }
