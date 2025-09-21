@@ -106,6 +106,7 @@ export type WebSocketEventType =
     | 'GAME_ENDED'
     | 'ROOM_CREATED'
     | 'ORDER_CONFIRMED';
+    | 'STATE_CHANGED';
 
 export interface WebSocketMessage {
     type: string;
