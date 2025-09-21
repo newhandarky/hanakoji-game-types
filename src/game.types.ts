@@ -95,6 +95,17 @@ export type WebSocketEventType =
     | 'TURN_CHANGED'             // 回合已改變
     | 'PLAYER_JOINED'            // 玩家已加入
     | 'ERROR'                    // 錯誤發生
+    | 'ORDER_DECISION_START'
+    | 'GAME_STARTED'
+    | 'GAME_STATE_UPDATED'
+    | 'ORDER_CONFIRMATION_UPDATE'
+    | 'ORDER_CONFIRMATIONS_UPDATED'
+    | 'PLAYER_LEFT'
+    | 'ORDER_DECISION_RESULT'
+    | 'TURN_ENDED'
+    | 'GAME_ENDED'
+    | 'ROOM_CREATED'
+    | 'ORDER_CONFIRMED';
 
 export interface WebSocketMessage {
     type: string;
