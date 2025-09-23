@@ -11,7 +11,7 @@ export interface ItemCard {
     type: string;
 }
 export type ActionType = 'secret' | 'trade-off' | 'gift' | 'competition';
-export type GamePhase = 'waiting' | 'deciding_order' | 'playing' | 'scoring' | 'ended';
+export type GamePhase = 'waiting' | 'deciding_order' | 'playing' | 'resolution' | 'ended';
 export interface ActionToken {
     type: ActionType;
     used: boolean;
@@ -24,7 +24,24 @@ export interface Player {
     secretCards: ItemCard[];
     discardedCards: ItemCard[];
     actionTokens: ActionToken[];
+    score: {
+        charm: number;
+        tokens: number;
+    };
 }
+export interface PendingGiftInteraction {
+    type: 'GIFT_SELECTION';
+    initiatorId: string;
+    targetPlayerId: string;
+    offeredCards: ItemCard[];
+}
+export interface PendingCompetitionInteraction {
+    type: 'COMPETITION_SELECTION';
+    initiatorId: string;
+    targetPlayerId: string;
+    groups: ItemCard[][];
+}
+export type PendingInteraction = PendingGiftInteraction | PendingCompetitionInteraction;
 export interface OrderDecision {
     isOpen: boolean;
     phase: 'deciding' | 'result' | 'waiting_confirmation';
@@ -47,6 +64,14 @@ export interface GameState {
     round: number;
     winner?: string;
     orderDecision: OrderDecision;
+    drawPile: ItemCard[];
+    discardPile: ItemCard[];
+    removedCard?: ItemCard;
+    pendingInteraction: PendingInteraction | null;
+    lastAction?: {
+        playerId: string;
+        action: ActionType;
+    };
 }
 export type GameAction = {
     type: 'INIT_GAME';
@@ -103,6 +128,44 @@ export type GameAction = {
         confirmations: string[];
         waitingFor: string[];
     };
+} | {
+    type: 'PLAY_SECRET';
+    payload: {
+        playerId: string;
+        cardId: string;
+    };
+} | {
+    type: 'PLAY_TRADE_OFF';
+    payload: {
+        playerId: string;
+        cardIds: string[];
+    };
+} | {
+    type: 'INITIATE_GIFT';
+    payload: {
+        playerId: string;
+        cardIds: string[];
+    };
+} | {
+    type: 'RESOLVE_GIFT';
+    payload: {
+        playerId: string;
+        chosenCardId: string;
+    };
+} | {
+    type: 'INITIATE_COMPETITION';
+    payload: {
+        playerId: string;
+        groups: string[][];
+    };
+} | {
+    type: 'RESOLVE_COMPETITION';
+    payload: {
+        playerId: string;
+        chosenGroupIndex: number;
+    };
+} | {
+    type: 'COMPLETE_ROUND';
 };
 export interface RoomInfo {
     roomId: string;
@@ -131,7 +194,7 @@ export interface OrderDecisionResultPayload {
     firstPlayer: string;
     secondPlayer: string;
     order: string[];
-    gameState: GameState;
+    gameState?: GameState;
 }
 export interface ErrorPayload {
     code: string;

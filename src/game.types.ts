@@ -17,7 +17,7 @@ export interface ItemCard {
 
 export type ActionType = 'secret' | 'trade-off' | 'gift' | 'competition';
 
-export type GamePhase = 'waiting' | 'deciding_order' | 'playing' | 'scoring' | 'ended';
+export type GamePhase = 'waiting' | 'deciding_order' | 'playing' | 'resolution' | 'ended';
 
 
 // 玩家可使用的行動標誌
@@ -35,7 +35,27 @@ export interface Player {
     secretCards: ItemCard[];        // 秘密保留卡片
     discardedCards: ItemCard[];     // 棄置的卡片
     actionTokens: ActionToken[];    // 行動標誌陣列
+    score: {
+        charm: number;              // 目前魅力分數總和
+        tokens: number;             // 目前擁有的藝妓數量
+    };
 }
+
+export interface PendingGiftInteraction {
+    type: 'GIFT_SELECTION';
+    initiatorId: string;
+    targetPlayerId: string;
+    offeredCards: ItemCard[];
+}
+
+export interface PendingCompetitionInteraction {
+    type: 'COMPETITION_SELECTION';
+    initiatorId: string;
+    targetPlayerId: string;
+    groups: ItemCard[][];
+}
+
+export type PendingInteraction = PendingGiftInteraction | PendingCompetitionInteraction;
 
 export interface OrderDecision {
     isOpen: boolean;
@@ -62,6 +82,14 @@ export interface GameState {
     winner?: string;
     // 新增順序決定相關狀態
     orderDecision: OrderDecision;
+    drawPile: ItemCard[];
+    discardPile: ItemCard[];
+    removedCard?: ItemCard;
+    pendingInteraction: PendingInteraction | null;
+    lastAction?: {
+        playerId: string;
+        action: ActionType;
+    };
 }
 
 // 定義可 dispatch 的動作
@@ -77,6 +105,13 @@ export type GameAction =
     | { type: 'START_ORDER_DECISION'; payload: { players: string[] } }
     | { type: 'ORDER_DECISION_RESULT'; payload: { firstPlayer: string; secondPlayer: string; order: string[] } }
     | { type: 'UPDATE_ORDER_CONFIRMATIONS'; payload: { confirmations: string[]; waitingFor: string[] } }
+    | { type: 'PLAY_SECRET'; payload: { playerId: string; cardId: string } }
+    | { type: 'PLAY_TRADE_OFF'; payload: { playerId: string; cardIds: string[] } }
+    | { type: 'INITIATE_GIFT'; payload: { playerId: string; cardIds: string[] } }
+    | { type: 'RESOLVE_GIFT'; payload: { playerId: string; chosenCardId: string } }
+    | { type: 'INITIATE_COMPETITION'; payload: { playerId: string; groups: string[][] } }
+    | { type: 'RESOLVE_COMPETITION'; payload: { playerId: string; chosenGroupIndex: number } }
+    | { type: 'COMPLETE_ROUND' };
 
 
 // 房間資訊（若需要額外管理大廳狀態）
@@ -133,7 +168,7 @@ export interface OrderDecisionResultPayload {
     firstPlayer: string;
     secondPlayer: string;
     order: string[];
-    gameState: GameState;
+    gameState?: GameState;
 }
 
 export interface ErrorPayload {
