@@ -37,7 +37,6 @@ export interface OrderDecision {
     confirmations: string[];
     waitingFor: string[];
     currentPlayer: string;
-    onConfirm: () => void;
 }
 export interface GameState {
     gameId: string;
@@ -84,6 +83,9 @@ export type GameAction = {
         winner: string;
     };
 } | {
+    type: 'SYNC_SERVER_STATE';
+    payload: GameState;
+} | {
     type: 'START_ORDER_DECISION';
     payload: {
         players: string[];
@@ -109,9 +111,9 @@ export interface RoomInfo {
     gameState: 'waiting' | 'playing' | 'ended';
 }
 export type WebSocketEventType = 'GAME_STATE_SYNC' | 'ORDER_DECISION_STARTED' | 'ORDER_DECISION_COMPLETED' | 'TURN_CHANGED' | 'PLAYER_JOINED' | 'ERROR' | 'ORDER_DECISION_START' | 'GAME_STARTED' | 'GAME_STATE_UPDATED' | 'ORDER_CONFIRMATION_UPDATE' | 'ORDER_CONFIRMATIONS_UPDATED' | 'PLAYER_LEFT' | 'ORDER_DECISION_RESULT' | 'TURN_ENDED' | 'GAME_ENDED' | 'ROOM_CREATED' | 'ORDER_CONFIRMED' | 'STATE_CHANGED';
-export interface WebSocketMessage {
-    type: string;
-    payload: any;
+export interface WebSocketMessage<T = any> {
+    type: WebSocketEventType | string;
+    payload: T;
 }
 export interface GameStartedPayload {
     gameState: GameState;

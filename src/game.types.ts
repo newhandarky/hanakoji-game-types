@@ -49,7 +49,6 @@ export interface OrderDecision {
     confirmations: string[];
     waitingFor: string[];
     currentPlayer: string;
-    onConfirm: () => void;
 }
 
 // 遊戲整體狀態
@@ -73,6 +72,7 @@ export type GameAction =
     | { type: 'SCORE_ROUND'; payload: { scores: { playerId: string; points: number }[] } }
     | { type: 'END_TURN' }
     | { type: 'END_GAME'; payload: { winner: string } }
+    | { type: 'SYNC_SERVER_STATE'; payload: GameState }
     // 新增順序決定相關動作
     | { type: 'START_ORDER_DECISION'; payload: { players: string[] } }
     | { type: 'ORDER_DECISION_RESULT'; payload: { firstPlayer: string; secondPlayer: string; order: string[] } }
@@ -108,9 +108,9 @@ export type WebSocketEventType =
     | 'ORDER_CONFIRMED'
     | 'STATE_CHANGED';
 
-export interface WebSocketMessage {
-    type: string;
-    payload: any;
+export interface WebSocketMessage<T = any> {
+    type: WebSocketEventType | string;
+    payload: T;
 }
 
 // 特定事件的 payload 型別
