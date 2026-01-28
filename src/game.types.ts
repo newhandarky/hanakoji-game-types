@@ -141,7 +141,13 @@ export type WebSocketEventType =
     | 'GAME_ENDED'
     | 'ROOM_CREATED'
     | 'ORDER_CONFIRMED'
-    | 'STATE_CHANGED';
+    | 'STATE_CHANGED'
+    | 'DEAL_ANIMATION'
+    | 'CARD_DRAWN'
+    | 'ACTION_EXECUTED'
+    | 'PENDING_INTERACTION'
+    | 'INTERACTION_RESOLVED'
+    | 'ROUND_COMPLETE';
 
 export interface WebSocketMessage<T = any> {
     type: WebSocketEventType | string;
