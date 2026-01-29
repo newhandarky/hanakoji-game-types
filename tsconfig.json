@@ -1,16 +1,23 @@
-// tsconfig.json
+// 共享型別套件的 TypeScript 設定
 {
     "compilerOptions": {
+        // 編譯輸出目標
         "target": "es2020",
+        // 模組格式（供 Node.js 使用）
         "module": "commonjs",
+        // 產出型別宣告檔
         "declaration": true,
+        // 編譯輸出資料夾
         "outDir": "./dist",
+        // 啟用嚴格模式
         "strict": true
     },
     "include": [
+        // 只編譯 src 內的型別檔
         "src/**/*"
     ],
     "exclude": [
+        // 排除輸出與相依套件
         "dist",
         "node_modules"
     ]
